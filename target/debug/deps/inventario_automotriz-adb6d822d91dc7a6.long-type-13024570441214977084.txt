@@ -1,0 +1,1 @@
+fn(axum::extract::State<Arc<PartsService>>) -> impl Future<Output = Result<axum::Json<Vec<parts::Part>>, PartsError>> {get_all_parts}

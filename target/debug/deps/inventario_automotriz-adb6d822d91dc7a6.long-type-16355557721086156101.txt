@@ -1,0 +1,1 @@
+fn(axum::extract::State<Arc<PartsService>>, axum::Json<parts::Part>) -> impl Future<Output = Result<(axum::http::StatusCode, axum::Json<Value>), PartsError>> {add_new_part}

@@ -3,14 +3,14 @@ name = "inventario-automotriz"
 version = "0.1.0"
 edition = "2021"
 
-
-
 [dependencies]
-axum = "0.6"
-actix-web = "4"
+axum = "0.6.20"
 tokio = { version = "1", features = ["full"] }
+tower = "0.4.13"
+tower-http = { version = "0.4.4", features = ["cors"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-tower-http = { version = "0.4", features = ["cors"] } # 🔹 Asegúrate de agregar "cors" aquí
-
-
+thiserror = "2.0.12"
+mockall = "0.13.1"
+async-trait = "0.1.88"
+http = "0.2.12"
