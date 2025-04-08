@@ -1,9 +1,0 @@
-C:\Users\Caro\Desktop\inventario-autmorriz\inventario-automotriz\target\debug\deps\libderive_more-8efd23b7828f0e66.rmeta: C:\Users\Caro\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\derive_more-2.0.1\src\lib.rs C:\Users\Caro\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\derive_more-2.0.1\src\as.rs C:\Users\Caro\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\derive_more-2.0.1\src\vendor\mod.rs C:\Users\Caro\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\derive_more-2.0.1\src\vendor\thiserror\mod.rs C:\Users\Caro\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\derive_more-2.0.1\src\vendor\thiserror\aserror.rs
-
-C:\Users\Caro\Desktop\inventario-autmorriz\inventario-automotriz\target\debug\deps\derive_more-8efd23b7828f0e66.d: C:\Users\Caro\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\derive_more-2.0.1\src\lib.rs C:\Users\Caro\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\derive_more-2.0.1\src\as.rs C:\Users\Caro\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\derive_more-2.0.1\src\vendor\mod.rs C:\Users\Caro\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\derive_more-2.0.1\src\vendor\thiserror\mod.rs C:\Users\Caro\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\derive_more-2.0.1\src\vendor\thiserror\aserror.rs
-
-C:\Users\Caro\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\derive_more-2.0.1\src\lib.rs:
-C:\Users\Caro\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\derive_more-2.0.1\src\as.rs:
-C:\Users\Caro\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\derive_more-2.0.1\src\vendor\mod.rs:
-C:\Users\Caro\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\derive_more-2.0.1\src\vendor\thiserror\mod.rs:
-C:\Users\Caro\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\derive_more-2.0.1\src\vendor\thiserror\aserror.rs:

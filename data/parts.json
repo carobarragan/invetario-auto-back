@@ -1,0 +1,10 @@
+[
+  {
+    "id": 1,
+    "name": "Partes del auto",
+    "category": "Motor",
+    "price": 250.1,
+    "brand": "Ford",
+    "condition": "Nuevo"
+  }
+]

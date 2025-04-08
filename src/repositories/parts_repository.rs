@@ -1,40 +1,91 @@
-use crate::models::pieza::Part;
+use crate::models::parts::{Part, PartsError};
+use async_trait::async_trait;
+use std::path::Path;
+use std::sync::Arc;
+use tokio::fs::{self, File, OpenOptions};
+use tokio::io::{AsyncReadExt, AsyncWriteExt};
 
-pub struct PartsRepository {
-    pub parts: Vec<Part>,
+#[async_trait]
+pub trait PartsRepositoryTrait {
+    async fn get_all(&self) -> Result<Vec<Part>, PartsError>;
+    async fn get_by_id(&self, id: u32) -> Result<Part, PartsError>;
+    async fn save_all(&self, parts: Vec<Part>) -> Result<(), PartsError>;
 }
 
-impl PartsRepository {
-    pub fn new() -> Self {
-        let initial_parts = vec![
-            Part {
-                id: Some(1), // Asegurando que el `id` es `Some`
-                name: "filtro de aire".to_string(),
-                stock: 50,
-            },
-            Part {
-                id: Some(2), // Asegurando que el `id` es `Some`
-                name: "llanta 205".to_string(),
-                stock: 50,
-            },
-        ];
-        PartsRepository {
-            parts: initial_parts,
+pub struct PartsRepository;
+
+impl Default for PartsRepository {
+    fn default() -> Self {
+        PartsRepository {}
+    }
+}
+
+#[async_trait]
+impl PartsRepositoryTrait for PartsRepository {
+    async fn get_all(&self) -> Result<Vec<Part>, PartsError> {
+        let path = "data/parts.json";
+
+        // Asegurarse de que el directorio exista
+        if let Some(parent) = Path::new(path).parent() {
+            fs::create_dir_all(parent).await.map_err(PartsError::Io)?;
         }
+
+        // Abrir o crear el archivo
+        let mut file = OpenOptions::new()
+            .read(true)
+            .write(true)
+            .create(true)
+            .open(path)
+            .await
+            .map_err(PartsError::Io)?;
+
+        let mut contents = String::new();
+        file.read_to_string(&mut contents)
+            .await
+            .map_err(PartsError::Io)?;
+
+        // Si el archivo está vacío, escribir []
+        if contents.trim().is_empty() {
+            file.write_all(b"[]").await.map_err(PartsError::Io)?;
+            return Ok(Vec::new());
+        }
+
+        let parts: Vec<Part> = serde_json::from_str(&contents).map_err(PartsError::Json)?;
+        Ok(parts)
     }
 
-    // Devuelve una lista de partes
-    pub fn get_parts(&self) -> Vec<Part> {
-        self.parts.clone() // Clonamos para evitar mutabilidad externa
+    async fn get_by_id(&self, id: u32) -> Result<Part, PartsError> {
+        let parts = self.get_all().await?;
+        parts
+            .into_iter()
+            .find(|part| part.id == id)
+            .ok_or(PartsError::NotFound)
     }
 
-    // Buscar una parte por `id`
-    pub fn find_by_id(&self, id: i32) -> Option<Part> {
-        self.parts.iter().find(|part| part.id == Some(id)).cloned() // Asegurando que el `id` coincida
-    }
+    async fn save_all(&self, parts: Vec<Part>) -> Result<(), PartsError> {
+        let path = "data/parts.json";
 
-    // Agregar una nueva parte
-    pub fn add(&mut self, part: Part) {
-        self.parts.push(part); // Empujar la nueva parte al repositorio
+        // Asegurarse de que el directorio exista
+        if let Some(parent) = Path::new(path).parent() {
+            fs::create_dir_all(parent).await.map_err(PartsError::Io)?;
+        }
+
+        let mut file = OpenOptions::new()
+            .write(true)
+            .truncate(true)
+            .create(true)
+            .open(path)
+            .await
+            .map_err(PartsError::Io)?;
+
+        let contents = serde_json::to_string_pretty(&parts).map_err(PartsError::Json)?;
+
+        file.write_all(contents.as_bytes())
+            .await
+            .map_err(PartsError::Io)?;
+
+        Ok(())
     }
 }
+
+pub type DynPartsRepository = Arc<dyn PartsRepositoryTrait + Send + Sync>;

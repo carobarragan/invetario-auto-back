@@ -1,42 +1,42 @@
-use crate::controllers::create_parts::create_part;
-use crate::controllers::parts_controller::{get_part_by_id, get_parts};
-use crate::services::parts_service::PartsService;
-use axum::http::header::CONTENT_TYPE;
-use axum::http::{HeaderValue, Method};
-use axum::{
-    routing::{get, post},
-    Router,
-};
+use axum::http::HeaderValue;
+use axum::{Router, ServiceExt};
+use std::{net::SocketAddr, sync::Arc};
+use tower_http::cors::{AllowOrigin, CorsLayer};
 
-use std::net::SocketAddr;
-use std::sync::Arc;
-use tower_http::cors::{Any, CorsLayer};
-
-mod controllers; // Tus controladores
+mod controllers;
 mod models;
-mod repositories; // Tu repositorio
-mod services; // Tu servicio
+mod repositories;
+mod services;
+
+use controllers::parts_controller::PartsControllerTrait;
 
 #[tokio::main]
 async fn main() {
-    // Crear el servicio y envolverlo en Arc para compartirlo entre hilos
-    let parts_service = Arc::new(PartsService::new());
+    // Iniciar el servidor
+    start_api_server().await;
+}
+
+/// Inicia el servidor API
+async fn start_api_server() {
+    println!("Iniciando servidor Axum...");
+
+    // Configurar CORS con orígenes permitidos
     let cors = CorsLayer::new()
-        .allow_origin("http://localhost:8080".parse::<HeaderValue>().unwrap())
-        .allow_methods([Method::GET, Method::POST])
-        .allow_headers([CONTENT_TYPE]);
+        .allow_methods(tower_http::cors::Any)
+        .allow_headers(tower_http::cors::Any)
+        .allow_origin(AllowOrigin::list([
+            "https://stocks-parts-ui.vercel.app"
+                .parse::<HeaderValue>()
+                .unwrap(),
+            "http://localhost:5173".parse::<HeaderValue>().unwrap(),
+        ]));
 
-    // Configuración de las rutas usando los controladores
-    let app = Router::new()
-        .route("/api/parts", get(get_parts)) // Obtener todas las partes
-        .route("/api/parts/:id", get(get_part_by_id)) // Obtener una parte por ID
-        .route("/api/parts", post(create_part)) // Crear una parte
-        .layer(cors) // Añadir el middleware CORS
-        .with_state(parts_service); // Inyectar el servicio compartido
+    // Configurar las rutas directamente desde PartsController
+    let app = controllers::parts_controller::PartsController::config_endpoints().layer(cors); // Aplicar CORS como middleware
 
-    // Configuración del servidor
-    let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
-    println!("Servidor corriendo en http://127.0.0.1:3000");
+    // Configurar el servidor
+    let addr = SocketAddr::from(([127, 0, 0, 1], 3001));
+    println!("Servidor corriendo en http://{}", addr);
 
     // Iniciar el servidor
     axum::Server::bind(&addr)
