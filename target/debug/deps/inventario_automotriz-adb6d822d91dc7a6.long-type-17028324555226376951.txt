@@ -1,0 +1,1 @@
+fn(axum::extract::State<Arc<(dyn PartsServiceTrait + Send + Sync + 'static)>>, axum::Json<DeleteRequest>) -> impl Future<Output = Result<axum::Json<Value>, PartsError>> {delete_existing_part}

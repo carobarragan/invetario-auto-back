@@ -1,0 +1,1 @@
+fn(axum::extract::State<Arc<PartsService>>, axum::extract::Path<u32>) -> impl Future<Output = Result<Json<parts::Part>, PartsError>> {get_part}
